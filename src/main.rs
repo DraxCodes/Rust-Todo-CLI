@@ -14,7 +14,7 @@ fn main() {
         return;
     }
 
-    let command = parse_command_arg(arguments);
+    let command = parse_command_args(arguments);
 
     match command {
         CommandType::Get => todo_list.print(),
@@ -23,7 +23,7 @@ fn main() {
     }
 }
 
-fn parse_command_arg(args: Vec<String>) -> CommandType {
+fn parse_command_args(args: Vec<String>) -> CommandType {
     return match args[1].to_lowercase().as_str() {
         "get" => CommandType::Get,
         "add" => if args.len() > 2 { 
