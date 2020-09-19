@@ -1,5 +1,40 @@
 use std::env;
 
+fn main() {
+    let arguments: Vec<String> = env::args().collect();
+
+    let mut todo_list = TodoList::new();
+    todo_list.add_to_list("Buy Milk".to_string());
+    todo_list.add_to_list("Buy Bread".to_string());
+
+    
+
+    if arguments.len() < 2 {
+        println!("You need to provide a comamnd.");
+        return;
+    }
+
+    let command = parse_command_arg(arguments);
+
+    match command {
+        CommandType::Get => todo_list.print(),
+        CommandType::Add(item) => todo_list.add_to_list(item),
+        CommandType::Invalid => panic!("You provided invalid input.")
+    }
+}
+
+fn parse_command_arg(args: Vec<String>) -> CommandType {
+    return match args[1].to_lowercase().as_str() {
+        "get" => CommandType::Get,
+        "add" => if args.len() > 2 { 
+            CommandType::Add(args[2].clone()) 
+        } else { 
+            CommandType::Invalid
+        },
+        _ => panic!("You must provide a valid command.")
+    };
+}
+
 struct TodoItem {
     name: String,
     completed: char
@@ -34,27 +69,8 @@ impl TodoList {
     }
 }
 
-fn main() {
-    let arguments: Vec<String> = env::args().collect();
-
-    let mut todo_list = TodoList::new();
-    todo_list.add_to_list("Buy Milk".to_string());
-    todo_list.add_to_list("Buy Bread".to_string());
-
-    
-
-    if arguments.len() < 2 {
-        println!("You need to provide a comamnd.");
-        return;
-    }
-
-    let command = arguments[1].clone().to_lowercase();
-
-    if command == "get" {
-        todo_list.print();
-    } else if command == "add" && arguments.len() > 2{
-        let task = arguments[2].clone();
-        todo_list.add_to_list(task.to_string());
-        todo_list.print();
-    }
+enum CommandType {
+    Get,
+    Add(String),
+    Invalid
 }
