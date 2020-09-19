@@ -18,7 +18,8 @@ fn main() {
 
     match command {
         CommandType::Get => todo_list.print(),
-        CommandType::Add(item) => todo_list.add_to_list(item),
+        CommandType::Add(item) => { todo_list.add_to_list(item); todo_list.print(); },
+        CommandType::Remove(pos) => { todo_list.remove_item(pos); todo_list.print(); },
         CommandType::Invalid => panic!("You provided invalid input.")
     }
 }
@@ -31,6 +32,11 @@ fn parse_command_args(args: Vec<String>) -> CommandType {
         } else { 
             CommandType::Invalid
         },
+        "remove" => if args.len() > 2 { 
+            CommandType::Remove(args[2].parse::<usize>().unwrap() - 1) 
+        } else { 
+            CommandType::Invalid
+        }
         _ => panic!("You must provide a valid command.")
     };
 }
@@ -62,9 +68,13 @@ impl TodoList {
         self.items.push(TodoItem::new(name));
     }
 
+    fn remove_item(&mut self, pos: usize) {
+        self.items.remove(pos);
+    }
+
     fn print(&self) {
-        for item in &self.items {
-            println!("[{}] - {}", item.completed, item.name);
+        for (pos, item) in self.items.iter().enumerate() {
+            println!("{}: [{}] - {}", pos + 1, item.completed, item.name);
         }
     }
 }
@@ -72,5 +82,6 @@ impl TodoList {
 enum CommandType {
     Get,
     Add(String),
+    Remove(usize),
     Invalid
 }
