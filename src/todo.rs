@@ -42,8 +42,8 @@ impl TodoList {
 
 pub enum CommandType {
     Get,
-    Add(String),
-    Remove(usize),
-    Complete(usize),
+    Add,
+    Remove,
+    Complete,
     Invalid
 }
